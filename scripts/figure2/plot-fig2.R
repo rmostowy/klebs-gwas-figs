@@ -101,6 +101,23 @@ setnames(ecods.top.two, c("1", "2"), c("ECOD1", "ECOD2"))
 pyseer.funct <- merge(pyseer, phrogs.top.two, by = c("version", "PC"), all.x = TRUE)
 pyseer.funct <- merge(pyseer.funct, ecods.top.two, by = c("version", "PC"), all.x = TRUE)
 pyseer.funct.outfile <- file.path(data.path, cfg$data$gwas_hits_functs)
+
+# ###############
+# ## ||||||||||||
+# 
+# test.pl <- rbind(
+#   pyseer.funct[PC == "PC0449" & version == "PCI50C50" & locus == "KL3" & mode == "lasso"],
+#   pyseer.funct[PC == "PC0367" & version == "PCI50C50" & locus == "KL14" & mode == "lasso"], 
+#   pyseer.funct[PC == "PC0333" & version == "PCI00C80" & locus == "KL28" & mode == "lasso"],
+#   pyseer.funct[PC == "PC0605" & version == "PCI00C80" & locus == "KL38" & mode == "lasso"],
+#   pyseer.funct[PC == "PC0400" & version == "PCI50C50" & locus == "KL62" & mode == "lasso"],
+#   pyseer.funct[PC == "PC0400" & version == "PCI00C80" & locus == "KL127" & mode == "lasso"]
+# ) %>% select(locus, version, PC, PHROGS1, ECOD1, ECOD2) 
+# print(test.pl)
+# 
+# ## ||||||||||||
+# ###############
+
 fwrite(pyseer.funct, file = pyseer.funct.outfile)
 
 

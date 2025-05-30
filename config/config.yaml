@@ -27,4 +27,5 @@ params:
   phrogs_scov: 0.5
   ecod_prob: 0.9
   ecod_qcov: 0
-  ecod_scov: 0.3
+  ecod_scov: 0
+  best_results_prec_thr: 0.8
