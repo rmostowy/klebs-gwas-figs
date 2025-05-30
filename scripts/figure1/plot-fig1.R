@@ -83,7 +83,7 @@ diversity.data.melted[, SC_source := ifelse(category %in% c("KASPAH_REF_SCs", "n
                                             "KASPAH-REF", "Other")]
 
 ###############################
-## Plot diversity data
+## Plot Figure 1B
 ###############################
 
 col.palette <- brewer.pal(12, "Paired")
@@ -126,3 +126,64 @@ p.panelB <- ggplot(diversity.data.melted, aes(x = MGG_K_locus, y = count, fill =
 print(p.panelB)
 
 ggsave("Figure_1B.pdf", p.panelB, width = 11, height = 8, device = cairo_pdf)
+
+
+###############################
+## Plot Supplementary Figure
+###############################
+
+dir.create("supplementary figures")
+
+# Load the K-locus Summary Table (containing number of SCs per K-locus)
+# Assuming the table name is `k_locus_summary`
+k_locus_summary <- k_locus_summary[total_SCs >= SC.CUTOFF]
+
+# Merge completeness data with K-locus summary to ensure proper sorting
+prophage_completeness <- merge(prophages[, .(MGG_K_locus, completeness)], k_locus_summary, by = "MGG_K_locus")
+
+# Plot the distribution of prophage completeness per K-locus (Jitter Plot)
+p.completeness.all <- ggplot(prophage_completeness, aes(x = reorder(MGG_K_locus, -total_SCs), y = completeness)) +
+  geom_boxplot(outlier.shape = NA, fill = "#A6CEE3", color = "black", alpha = 0.6) + 
+  geom_jitter(width = 0.2, alpha = 0.5, color = "#1A85FF") +  # Blue points for clarity
+  theme_minimal(base_size = 14) +
+  labs(
+    title = "Distribution of Prophage Completeness Across K-loci",
+    x = "K-locus",
+    y = "Prophage Completeness (%)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 12),
+    axis.text.y = element_text(size = 12),
+    legend.position = "none",
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+# Compute phage variant completeness by selecting the max completeness for each unique phage variant
+phage_variant_completeness <- prophages[, .(phage_variant_completeness = max(completeness)), by = .(MGG_K_locus, wgrr95)]
+
+# Merge with K-locus summary for proper sorting
+phage_variant_completeness <- merge(phage_variant_completeness, k_locus_summary, by = "MGG_K_locus")
+
+p.completeness.pv95 <- ggplot(phage_variant_completeness, aes(x = reorder(MGG_K_locus, -total_SCs), y = phage_variant_completeness)) +
+  geom_jitter(width = 0.2, alpha = 0.5, color = "#D73027") +  # Red points for clarity
+  geom_boxplot(outlier.shape = NA, fill = "#A6CEE3", color = "black", alpha = 0.6) + 
+  theme_minimal(base_size = 14) +
+  labs(
+    title = "Distribution of Phage Variant Completeness (WGRR95) Across K-loci",
+    x = "K-locus",
+    y = "Phage Variant Completeness (%)"
+  ) +
+  theme(
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 12),
+    axis.text.y = element_text(size = 12),
+    legend.position = "none",
+    panel.grid.major.x = element_blank(),
+    panel.grid.minor = element_blank()
+  )
+
+p.completeness.all.outfile <- "suppl-completeness-all.png"
+p.completeness.p95.outfile <- "suppl-completeness-p95.png"
+
+ggsave(p.completeness.all.outfile, p.completeness.all, width = 15, height = 7)
+ggsave(p.completeness.p95.outfile, p.completeness.pv95, width = 15, height = 7)
