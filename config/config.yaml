@@ -1,6 +1,7 @@
 paths:
   mgg:
     db_input_rel: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/3_GWAS/2025-05-13_KLEBDATA_LIGHT_GWAS/4_ANALYZE/2_AGGREGATED_DATA'
+    ecod_domains_input: 'MGG Dropbox/Databases/hhsuite/ECOD_F70/ecod.develop263.F70.domains.txt'
   rafal:
     main: "/Users/rmostowy"
     db_output_rel: 'Data/gwas-figs'
@@ -11,15 +12,19 @@ data:
   bact_tree: 'bacteria_iqtree.nwk'
   bact_metadata: 'bacteria-metadata.csv'
   gwas_hits: 'pyseer_hits_all.csv'
+  gwas_hits_functs: 'pyseer_hits_all_functs.csv'
   gwas_functs: 'clusters_functions_best_all.csv'
   prophage_metadata: 'prophages-metadata.csv'
   protein_table: 'predictions_and_enzymes.csv'
+  ecod_domains: 'ecod-domain-table.csv'
   
-
-phrogs:
-  annot: "Phrogs/phrog_annot_v4.tsv"
-  table: "Phrogs/phrogs_table_almostfinal_plusGO_wNA_utf8.tsv"
 
 params:
   sc_cutoff: 8
   sc_cutoff_gwas: 10
+  phrogs_prob: 0.9
+  phrogs_qcov: 0.5
+  phrogs_scov: 0.5
+  ecod_prob: 0.9
+  ecod_qcov: 0
+  ecod_scov: 0.3
