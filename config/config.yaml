@@ -23,8 +23,8 @@ params:
   sc_cutoff: 8
   sc_cutoff_gwas: 10
   phrogs_prob: 0.9
-  phrogs_qcov: 0.5
-  phrogs_scov: 0.5
+  phrogs_qcov: 0.3
+  phrogs_scov: 0.3
   ecod_prob: 0.9
   ecod_qcov: 0
   ecod_scov: 0

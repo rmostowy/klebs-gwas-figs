@@ -173,7 +173,7 @@ gwas.results.pr <- ggplot(pyseer.results.filtered.plot, aes(x = precision, y = r
   scale_x_continuous(limits = c(0.25, 1)) + 
   scale_y_continuous(limits = c(0.25, 1)) + 
   theme_bw(base_size = 14) + 
-  guides(color = "none") +
+  # guides(color = "none") +
   labs(
     x = "Precision",
     y = "Recall",
@@ -182,4 +182,7 @@ gwas.results.pr <- ggplot(pyseer.results.filtered.plot, aes(x = precision, y = r
 
 figure.ab <- gwas.results + gwas.results.pr + plot_annotation(tag_levels = 'A')
 # ggsave("Figure2A_B.png", figure.ab, width = 12, height = 5)
-ggsave("Figure2A_B.pdf", figure.ab, width = 18, height = 8)
+ggsave("Figure2A.pdf", gwas.results, width = 10, height = 7)
+
+dir.create('suppl-figs', showWarnings = F)
+ggsave("suppl-figs/Supp_Figure_Prec-Recall.pdf", gwas.results.pr, width = 10, height = 7)

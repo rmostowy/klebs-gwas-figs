@@ -149,7 +149,7 @@ plot.gwas <- ggplot(gwas.results.per.k.plot, aes(x = k.locus, y = recall, color 
       override.aes = list(starshape = 15, size = 5, color = "black")
     )  # Changes ECOD fill legend to a circle (shape 21)
   )
-ggsave("Figure3A.pdf", plot.gwas, width = 16, height = 5)
+ggsave("Figure3A.pdf", plot.gwas, width = 12.5, height = 5)
 
 
 ######################
