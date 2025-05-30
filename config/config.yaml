@@ -1,0 +1,25 @@
+paths:
+  mgg:
+    db_input_rel: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/3_GWAS/2025-05-13_KLEBDATA_LIGHT_GWAS/4_ANALYZE/2_AGGREGATED_DATA'
+  rafal:
+    main: "/Users/rmostowy"
+    db_output_rel: 'Data/gwas-figs'
+  janusz:
+    main: "/Users/jkoszucki"
+    
+data:
+  bact_tree: 'bacteria_iqtree.nwk'
+  bact_metadata: 'bacteria-metadata.csv'
+  gwas_hits: 'pyseer_hits_all.csv'
+  gwas_functs: 'clusters_functions_best_all.csv'
+  prophage_metadata: 'prophages-metadata.csv'
+  protein_table: 'predictions_and_enzymes.csv'
+  
+
+phrogs:
+  annot: "Phrogs/phrog_annot_v4.tsv"
+  table: "Phrogs/phrogs_table_almostfinal_plusGO_wNA_utf8.tsv"
+
+params:
+  sc_cutoff: 8
+  sc_cutoff_gwas: 10
