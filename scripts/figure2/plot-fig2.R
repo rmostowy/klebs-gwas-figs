@@ -7,6 +7,7 @@ suppressWarnings(library(ggtree))
 suppressWarnings(library(ggtreeExtra))
 suppressWarnings(library(ggplot2))
 suppressWarnings(library(ggrepel))
+suppressWarnings(library(ggpubr))
 suppressWarnings(library(RColorBrewer))
 suppressWarnings(library(patchwork))
 
@@ -164,16 +165,15 @@ gwas.results <- ggplot(pyseer.results.filtered.plot,
   scale_x_continuous(limits = c(0.4, 1)) +
   scale_y_continuous(limits = c(0.5, 1))
 
-gwas.results.pr <- ggplot(pyseer.results.filtered.plot, aes(x = precision, y = recall, label = label, colour = funct)) + 
-  geom_smooth(method = "lm", colour = "black", fullrange = TRUE) +  # Fit a linear model
-  geom_point(alpha = 0.9, size = 3) +          # Scatter points
+gwas.results.pr <- ggplot(pyseer.results.filtered.plot, aes(x = precision, y = recall, label = label, colour = funct)) +
+  geom_smooth(method = "lm", colour = "black", fullrange = TRUE) +
+  geom_point(alpha = 0.9, size = 3) +
   geom_text_repel(size = 3, box.padding = 0.5, max.overlaps = 20, colour = "black") +
+  stat_cor(method = "pearson", label.x = 0.8, label.y = 0.95, size = 5, colour = "black") +
   scale_color_brewer(palette = "Paired") +
-  # geom_text_repel(aes(label = PC), size = 4, box.padding = 0.5, max.overlaps = 20) +
-  scale_x_continuous(limits = c(0.25, 1)) + 
-  scale_y_continuous(limits = c(0.25, 1)) + 
-  theme_bw(base_size = 14) + 
-  # guides(color = "none") +
+  scale_x_continuous(limits = c(0.25, 1)) +
+  scale_y_continuous(limits = c(0.25, 1)) +
+  theme_bw(base_size = 14) +
   labs(
     x = "Precision",
     y = "Recall",
