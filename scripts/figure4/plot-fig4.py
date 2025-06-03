@@ -877,15 +877,15 @@ if __name__ == "__main__":
     # FIGURE4 PANELA
     bacteria_table = Path(gwas_dir, 'bacteria.tsv')
     predictions_and_enzymes = Path(gwas_dir, 'predictions_and_enzymes.tsv')
-    panelA_pdf_path = Path(output_dir, 'Figure_4A.pdf')
+    panelA_pdf_path = Path(output_dir, 'Figure4A.pdf')
 
     # FIGURE4 PANELB
-    nodes_outfile = Path(output_dir, 'Figure_4B_NODES.tsv')
-    edges_outfile = Path(output_dir, 'Figure_4B_EDGES.tsv')
+    nodes_outfile = Path(output_dir, 'Figure4B_NODES.tsv')
+    edges_outfile = Path(output_dir, 'Figure4B_EDGES.tsv')
     tmp_blast_dir = Path(user_path, 'tmp_blast_dir')
 
     # FIGURE4 PANELC
-    panelC_pdf_path = Path(output_dir, 'Figure_4C.pdf')
+    panelC_pdf_path = Path(output_dir, 'Figure4C.pdf')
 
 
     # EXECUTE
