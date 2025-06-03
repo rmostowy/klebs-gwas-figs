@@ -872,6 +872,10 @@ if __name__ == "__main__":
 
     gwas_dir = Path(user_path, db_input_rel_path)
     output_dir = Path().cwd()
+    suppl_output_dir = Path(output_dir, 'suppl-figs')
+
+    # create
+    suppl_output_dir.mkdir(exist_ok=True, parents=True)
 
     
     # FIGURE4 PANELA
@@ -885,7 +889,7 @@ if __name__ == "__main__":
     tmp_blast_dir = Path(user_path, 'tmp_blast_dir')
 
     # FIGURE4 PANELC
-    panelC_pdf_path = Path(output_dir, 'Figure4C.pdf')
+    panelC_pdf_path = Path(suppl_output_dir, 'Figure4C.pdf')
 
 
     # EXECUTE
