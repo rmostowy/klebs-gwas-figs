@@ -78,8 +78,8 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
         "PREDICTION_PERFECT": "#85C187",    # remains the same
         "PREDICTION_GOOD": "#DBEFDC",       # remains the same
         "LITERATURE_SEARCH": "#bc96d9",     # for lytic phage depolymerases
-        "GENSCRIPT_ACTIVE": "#4169E1",      # lighter blue for genscript active
-        "GENSCRIPT_INACTIVE": "#ADD8E6"      # light blue for genscript inactive
+        "GENSCRIPT_ACTIVE": "#6caed7",      # lighter blue for genscript active
+        "GENSCRIPT_INACTIVE": "#dfebf8"      # light blue for genscript inactive
     }
 
     row_config = {
@@ -375,10 +375,10 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
     for row_index in range(num_rows):
         config = row_config[row_index]
         y = margin + (num_rows - 1 - row_index) * cell_height + cell_height/2
-        ax.text(margin - 0.2, y, config["label"], ha='right', va='center',
+        ax.text(margin - 0.075, y, config["label"], ha='right', va='center',
                 fontsize=labels_fontsize, fontweight='bold')
     
-    plt.savefig(panelA_pdf_path, format='pdf', bbox_inches='tight')
+    plt.savefig(panelA_pdf_path, format='pdf', bbox_inches='tight', pad_inches=0)
     plt.close(fig)
 
 
@@ -896,5 +896,5 @@ if __name__ == "__main__":
 
     # EXECUTE
     FIGURE4_PANELA()
-    # FIGURE4_PANELB()
-    # FIGURE4_PANELC()
+    FIGURE4_PANELB()
+    FIGURE4_PANELC()
