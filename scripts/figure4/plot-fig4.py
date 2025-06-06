@@ -60,10 +60,11 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
         "num_rows": 6,
         "margin": 0.3,
         "header_space": 0.1,
-        "labels_fontsize": 4,
-        "cells_fontsize": 3.5,
+        "labels_fontsize": 5.25,
+        "cells_fontsize": 4.5,
         "target_fig_width": 7.5,
-        "target_fig_height": 1.4
+        "target_fig_height": 1.4,
+        "cell_line_width": 0.35
     }
 
     # ------------------------------------------------------------
@@ -246,6 +247,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
     target_fig_height = layout_config["target_fig_height"]
     labels_fontsize = layout_config["labels_fontsize"]
     cells_fontsize = layout_config["cells_fontsize"]
+    cell_line_width = layout_config["cell_line_width"]
     num_rows = layout_config["num_rows"]
     
     cell_width = (target_fig_width - 2 * margin) / num_cols
@@ -286,7 +288,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
                 else:
                     cell_color = color_config.get(data_key, "white") if count > 0 else "white"
                 rect = patches.Rectangle((x, y), cell_width, cell_height,
-                                         facecolor=cell_color, edgecolor="black")
+                                         facecolor=cell_color, edgecolor="black", linewidth=cell_line_width)
                 ax.add_patch(rect)
 
                 if count > 0:
@@ -302,7 +304,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
                 
                 if total == 0:
                     rect = patches.Rectangle((x, y), cell_width, cell_height,
-                                             facecolor="white", edgecolor="black")
+                                             facecolor="white", edgecolor="black", linewidth=cell_line_width)
                     ax.add_patch(rect)
                 elif (count_active > 0 and count_inactive == 0) or (count_inactive > 0 and count_active == 0):
                     if count_active > 0:
@@ -312,7 +314,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
                         fill_color = color_config[config["color_keys"][1]]
                         count = count_inactive
                     rect = patches.Rectangle((x, y), cell_width, cell_height,
-                                             facecolor=fill_color, edgecolor="black")
+                                             facecolor=fill_color, edgecolor="black", linewidth=cell_line_width)
                     ax.add_patch(rect)
                     ax.text(x + cell_width/2, y + cell_height/2, str(count),
                             ha='center', va='center', color=cell_number_color,
@@ -322,7 +324,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
                     # Left subcell for ACTIVE
                     sub_rect = patches.Rectangle((x, y), subcell_width, cell_height,
                                                  facecolor=color_config[config["color_keys"][0]],
-                                                 edgecolor="black")
+                                                 edgecolor="black", linewidth=cell_line_width)
                     ax.add_patch(sub_rect)
                     ax.text(x + subcell_width/2, y + cell_height/2, str(count_active),
                             ha='center', va='center', color=cell_number_color,
@@ -331,7 +333,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
                     sub_x = x + subcell_width
                     sub_rect = patches.Rectangle((sub_x, y), subcell_width, cell_height,
                                                  facecolor=color_config[config["color_keys"][1]],
-                                                 edgecolor="black")
+                                                 edgecolor="black", linewidth=cell_line_width)
                     ax.add_patch(sub_rect)
                     ax.text(sub_x + subcell_width/2, y + cell_height/2, str(count_inactive),
                             ha='center', va='center', color=cell_number_color,
@@ -341,13 +343,13 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
                 pred_counts = cell_value
                 if not pred_counts:
                     rect = patches.Rectangle((x, y), cell_width, cell_height,
-                                             facecolor="white", edgecolor="black")
+                                             facecolor="white", edgecolor="black", linewidth=cell_line_width)
                     ax.add_patch(rect)
                 elif len(pred_counts) == 1:
                     pred_category, count = list(pred_counts.items())[0]
                     cell_color = color_config["PREDICTION_PERFECT"] if pred_category.lower() == "strong" else color_config["PREDICTION_GOOD"]
                     rect = patches.Rectangle((x, y), cell_width, cell_height,
-                                             facecolor=cell_color, edgecolor="black")
+                                             facecolor=cell_color, edgecolor="black", linewidth=cell_line_width)
                     ax.add_patch(rect)
                     ax.text(x + cell_width/2, y + cell_height/2, str(count),
                             ha='center', va='center', color=cell_number_color,
@@ -361,7 +363,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
                         mapped_category = "PREDICTION_PERFECT" if pred_category.lower() == "strong" else "PREDICTION_GOOD"
                         sub_rect = patches.Rectangle((sub_x, y), subcell_width, cell_height,
                                                      facecolor=color_config[mapped_category],
-                                                     edgecolor="black")
+                                                     edgecolor="black", linewidth=cell_line_width)
                         ax.add_patch(sub_rect)
                         ax.text(sub_x + subcell_width/2, y + cell_height/2, str(count),
                                 ha='center', va='center', color=cell_number_color,
@@ -894,5 +896,5 @@ if __name__ == "__main__":
 
     # EXECUTE
     FIGURE4_PANELA()
-    FIGURE4_PANELB()
-    FIGURE4_PANELC()
+    # FIGURE4_PANELB()
+    # FIGURE4_PANELC()
