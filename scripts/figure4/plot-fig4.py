@@ -60,11 +60,13 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
         "num_rows": 6,
         "margin": 0.3,
         "header_space": 0.1,
-        "labels_fontsize": 5.25,
+        # "labels_fontsize": 5.25,
         "cells_fontsize": 4.5,
         "target_fig_width": 7.5,
         "target_fig_height": 1.4,
-        "cell_line_width": 0.35
+        "cell_line_width": 0.35,
+        "X_labels_fontsize": 6.25,
+        "Y_labels_fontsize": 5.25
     }
 
     # ------------------------------------------------------------
@@ -87,7 +89,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
         1: {"data_key": "GWAS_KSC", "label": "Sequence Clusters (SCs)", "plot_type": "single"},
         2: {"data_key": "PREDICTION", "label": "GWAS prediction", "plot_type": "prediction",
             "categories": ["PREDICTION_PERFECT", "PREDICTION_GOOD"]},
-        3: {"data_key": "PROPHAGE", "label": "Active proteins based on manual prediction", "plot_type": "split",
+        3: {"data_key": "PROPHAGE", "label": "Active based on manual prediction", "plot_type": "split",
             "categories": ["ACTIVE", "INACTIVE"], "color_keys": ["PROPHAGE_ACTIVE", "PROPHAGE_INACTIVE"]},
         4: {"data_key": "GENSCRIPT", "label": "Active based on GWAS prediction", "plot_type": "split",
             "categories": ["ACTIVE", "INACTIVE"], "color_keys": ["GENSCRIPT_ACTIVE", "GENSCRIPT_INACTIVE"]},
@@ -245,7 +247,8 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
     header_space = layout_config["header_space"]
     target_fig_width = layout_config["target_fig_width"]
     target_fig_height = layout_config["target_fig_height"]
-    labels_fontsize = layout_config["labels_fontsize"]
+    X_labels_fontsize = layout_config["X_labels_fontsize"]
+    Y_labels_fontsize = layout_config["Y_labels_fontsize"]
     cells_fontsize = layout_config["cells_fontsize"]
     cell_line_width = layout_config["cell_line_width"]
     num_rows = layout_config["num_rows"]
@@ -265,7 +268,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
     for i, k_locus in enumerate(sorted_keys):
         x = margin + i * cell_width + cell_width / 2
         ax.text(x, header_y, k_locus, ha='center', va='bottom',
-                fontsize=labels_fontsize, fontweight='bold', rotation=60)
+                fontsize=X_labels_fontsize, fontweight='bold', rotation=60)
     
     # ------------------------------------------------------------
     # Loop through rows (using row_config order) and columns.
@@ -376,7 +379,7 @@ def FIGURE4_PANELA(cell_number_color="#000000"):
         config = row_config[row_index]
         y = margin + (num_rows - 1 - row_index) * cell_height + cell_height/2
         ax.text(margin - 0.075, y, config["label"], ha='right', va='center',
-                fontsize=labels_fontsize, fontweight='bold')
+                fontsize=Y_labels_fontsize, fontweight='bold')
     
     plt.savefig(panelA_pdf_path, format='pdf', bbox_inches='tight', pad_inches=0)
     plt.close(fig)
@@ -896,5 +899,5 @@ if __name__ == "__main__":
 
     # EXECUTE
     FIGURE4_PANELA()
-    FIGURE4_PANELB()
-    FIGURE4_PANELC()
+    # FIGURE4_PANELB()
+    # FIGURE4_PANELC()
