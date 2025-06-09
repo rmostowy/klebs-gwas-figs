@@ -6,7 +6,7 @@ paths:
     main: "/Users/rmostowy"
     db_output_rel: 'Data/gwas-figs'
   janusz:
-    main: "/Users/jkoszucki"
+    main: "/Users/januszkoszucki"
     
 data:
   bact_tree: 'bacteria_iqtree.nwk'
@@ -29,3 +29,4 @@ params:
   ecod_qcov: 0
   ecod_scov: 0
   best_results_prec_thr: 0.8
+  custom_kl_list: "KL1 KL2 KL3 KL6 KL7 KL8 KL10 KL11 KL13 KL14 KL15 KL16 KL21 KL22 KL24 KL25 KL28 KL30 KL35 KL38 KL39 KL47 KL48 KL55 KL57 KL60 KL61 KL62 KL64 KL103 KL111 KL122 KL125 KL127 KL142"
