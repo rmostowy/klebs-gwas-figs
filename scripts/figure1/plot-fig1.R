@@ -117,16 +117,18 @@ p.panelB <- ggplot(diversity.data.melted, aes(x = MGG_K_locus, y = count, fill =
     text = element_text(family = "Myriad Pro"),
     panel.grid.major.x = element_line(color = "gray80", linetype = "dotted"),
     panel.grid.major.y = element_line(color = "gray80"), 
-    strip.text = element_text(face = "bold", size = 14),
-    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 10),
-    axis.text.y = element_text(size = 12),
-    legend.position = "right",
+    strip.text = element_text(face = "bold", size = 18),
+    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 13),
+    axis.text.y = element_text(size = 20),
+    axis.title.x = element_text(size = 18),
+    axis.title.y = element_text(size = 18),
+    legend.position = "top",
     panel.grid.minor = element_blank()
   )
 print(p.panelB)
 
-ggsave("Figure_1B.pdf", p.panelB, width = 11, height = 8, device = cairo_pdf)
-
+# ggsave("Figure_1B.png", p.panelB, width = 11, height = 8, device = cairo_pdf)
+ggsave("Figure_1B.png", p.panelB, width = 11, height = 8)
 
 ###############################
 ## Plot Supplementary Figure
