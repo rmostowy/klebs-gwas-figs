@@ -66,6 +66,11 @@ diversity.data <- merge(k_locus_summary, phage_summary, by = "MGG_K_locus")
 diversity.data <- diversity.data[total_SCs >= SC.CUTOFF]
 k.locus.order <- diversity.data[order(-total_SCs)]$MGG_K_locus
 
+k.locus.order.num <- as.numeric(gsub("KL", "", k.locus.order))
+k.locus.order.index <- sort(k.locus.order.num, index.return = T)$ix
+k.locus.order.new <- k.locus.order[k.locus.order.index]
+
+
 # Convert to long format for plotting both SCs and Phage Variants correctly
 diversity.data.melted <- melt(diversity.data, 
                               id.vars = "MGG_K_locus", 
@@ -95,7 +100,7 @@ data.colors <- c("KASPAH-REF" = col.red,  # Dark red
                  "Other" = col.blue)       # Dark green
 facet.order <- c("Sequence Clusters", "Phage Variants")
 
-diversity.data.melted$MGG_K_locus <- factor(diversity.data.melted$MGG_K_locus, levels = k.locus.order)
+diversity.data.melted$MGG_K_locus <- factor(diversity.data.melted$MGG_K_locus, levels = k.locus.order.new)
 diversity.data.melted$facet_group <- factor(diversity.data.melted$facet_group, levels = facet.order)
 diversity.data.melted[, SC_source := factor(SC_source, levels = c("Other", "KASPAH-REF"))]
 
@@ -134,14 +139,14 @@ ggsave("Figure_1B.png", p.panelB, width = 11, height = 8)
 ## Plot Supplementary Figure
 ###############################
 
-dir.create("supplementary figures")
+dir.create("suppl-figs")
 
 # Load the K-locus Summary Table (containing number of SCs per K-locus)
 # Assuming the table name is `k_locus_summary`
 k_locus_summary <- k_locus_summary[total_SCs >= SC.CUTOFF]
 
 # Merge completeness data with K-locus summary to ensure proper sorting
-prophage_completeness <- merge(prophages[, .(MGG_K_locus, completeness)], k_locus_summary, by = "MGG_K_locus")
+prophage_completeness <- merge(prophage.metadata[, .(MGG_K_locus, completeness)], k_locus_summary, by = "MGG_K_locus")
 
 # Plot the distribution of prophage completeness per K-locus (Jitter Plot)
 p.completeness.all <- ggplot(prophage_completeness, aes(x = reorder(MGG_K_locus, -total_SCs), y = completeness)) +
@@ -162,7 +167,7 @@ p.completeness.all <- ggplot(prophage_completeness, aes(x = reorder(MGG_K_locus,
   )
 
 # Compute phage variant completeness by selecting the max completeness for each unique phage variant
-phage_variant_completeness <- prophages[, .(phage_variant_completeness = max(completeness)), by = .(MGG_K_locus, wgrr95)]
+phage_variant_completeness <- prophage.metadata[, .(phage_variant_completeness = max(completeness)), by = .(MGG_K_locus, wgrr95)]
 
 # Merge with K-locus summary for proper sorting
 phage_variant_completeness <- merge(phage_variant_completeness, k_locus_summary, by = "MGG_K_locus")
@@ -184,8 +189,8 @@ p.completeness.pv95 <- ggplot(phage_variant_completeness, aes(x = reorder(MGG_K_
     panel.grid.minor = element_blank()
   )
 
-p.completeness.all.outfile <- "suppl-completeness-all.png"
-p.completeness.p95.outfile <- "suppl-completeness-p95.png"
+p.completeness.all.outfile <- "suppl-figs/suppl-completeness-all.png"
+p.completeness.p95.outfile <- "suppl-figs/suppl-completeness-p95.png"
 
 ggsave(p.completeness.all.outfile, p.completeness.all, width = 15, height = 7)
 ggsave(p.completeness.p95.outfile, p.completeness.pv95, width = 15, height = 7)
