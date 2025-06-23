@@ -66,11 +66,6 @@ diversity.data <- merge(k_locus_summary, phage_summary, by = "MGG_K_locus")
 diversity.data <- diversity.data[total_SCs >= SC.CUTOFF]
 k.locus.order <- diversity.data[order(-total_SCs)]$MGG_K_locus
 
-k.locus.order.num <- as.numeric(gsub("KL", "", k.locus.order))
-k.locus.order.index <- sort(k.locus.order.num, index.return = T)$ix
-k.locus.order.new <- k.locus.order[k.locus.order.index]
-
-
 # Convert to long format for plotting both SCs and Phage Variants correctly
 diversity.data.melted <- melt(diversity.data, 
                               id.vars = "MGG_K_locus", 
@@ -88,58 +83,90 @@ diversity.data.melted[, SC_source := ifelse(category %in% c("KASPAH_REF_SCs", "n
                                             "KASPAH-REF", "Other")]
 
 ###############################
-## Plot Figure 2B
+## Plot Supplementary Figures
 ###############################
 
-col.palette <- brewer.pal(12, "Paired")
-col.blue <- col.palette[1]
-col.red <- col.palette[6]
-col.brown <- col.palette[12]
+suppl.fig.dir <- "suppl-figs" 
+dir.create(suppl.fig.dir, showWarnings = F, recursive = T)
 
-data.colors <- c("KASPAH-REF" = col.red,  # Dark red
-                 "Other" = col.blue)       # Dark green
-facet.order <- c("Sequence Clusters", "Phage Variants")
+#### ---------------------------------  ####
+#### SC and PV diversity for all K-loci ####
+#### ---------------------------------  ####
 
-diversity.data.melted$MGG_K_locus <- factor(diversity.data.melted$MGG_K_locus, levels = k.locus.order.new)
-diversity.data.melted$facet_group <- factor(diversity.data.melted$facet_group, levels = facet.order)
-diversity.data.melted[, SC_source := factor(SC_source, levels = c("Other", "KASPAH-REF"))]
+# Use full dataset, including low-SC K-loci
+diversity.data.full <- merge(k_locus_summary, phage_summary, by = "MGG_K_locus")
+diversity.data.full <- diversity.data.full[MGG_K_locus != "UNK"]
 
-p.panelB <- ggplot(diversity.data.melted, aes(x = MGG_K_locus, y = count, fill = SC_source)) +
-  geom_bar(stat = "identity", color = "black", position = "stack", width = 0.7) +
-  facet_grid(facet_group ~ ., scales = "free_y") +  # Separate SCs and PVs into different facets
-  scale_fill_manual(values = data.colors) +  # Red & Green
-  theme_minimal(base_size = 14) +
-  # ✅ Add geom_hline() but restrict it to "Sequence Clusters" facet
-  geom_hline(data = subset(diversity.data.melted, facet_group == "Sequence Clusters"), 
-             aes(yintercept = SC.CUTOFF.GWAS), 
-             linetype = "dashed", color = col.brown, linewidth = 1.2) +
-  labs(
-    x = "K-locus",
-    y = "Count",
-    fill = "SC Source"
-  ) +
+# Melt and annotate
+div.melt <- melt(diversity.data.full, 
+                 id.vars = "MGG_K_locus", 
+                 measure.vars = c("KASPAH_REF_SCs", "other_SCs", 
+                                  "no.pv.kaspah.ref", "no.pv.other"),
+                 variable.name = "category", 
+                 value.name = "count")
+
+div.melt[, type := fifelse(grepl("SC", category), "SCs", "PVs")]
+div.melt[, source := fifelse(grepl("kaspah.ref|KASPAH_REF", category), "KASPAH-REF", "Other")]
+
+# Order K-loci by total SCs for consistent Y-axis
+ordered_loci <- diversity.data.full[order(-total_SCs)]$MGG_K_locus
+div.melt$MGG_K_locus <- factor(div.melt$MGG_K_locus, levels = rev(ordered_loci))
+div.melt$source <- factor(div.melt$source, levels = c("Other", "KASPAH-REF"))
+
+pal <- brewer.pal(12, "Paired")
+data.colors <- c("Other" = pal[1], "KASPAH-REF" = pal[6])
+
+# Filter and order
+sc_counts <- diversity.data.full[, .(MGG_K_locus, total_SCs)]
+sc_counts <- sc_counts[order(-total_SCs)]
+top_k_loci <- sc_counts[total_SCs >= SC.CUTOFF.GWAS]$MGG_K_locus
+total_loci <- length(ordered_loci)
+# Determine where to draw the line
+line_index <- total_loci - 35 + 0.5
+
+# Y-axis factor levels already ordered as rev(ordered_loci)
+# So line_index = 35.5 will work correctly after flipping coordinates
+
+# Left: Sequence Clusters
+p_scs <- ggplot(div.melt[type == "SCs"], aes(x = count, y = MGG_K_locus, fill = source)) +
+  geom_bar(stat = "identity", position = "stack", colour = "black", width = 0.7) +
+  scale_fill_manual(values = data.colors) +
+  labs(x = "No. of Sequence Clusters", y = "K-locus", fill = "Source") +
+  geom_hline(yintercept = line_index, linetype = "dashed", colour = "brown", linewidth = 1) +
+  theme_minimal(base_size = 12) +
   theme(
-    text = element_text(family = "Myriad Pro"),
-    panel.grid.major.x = element_line(color = "gray80", linetype = "dotted"),
-    panel.grid.major.y = element_line(color = "gray80"), 
-    strip.text = element_text(face = "bold", size = 18),
-    axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 13),
-    axis.text.y = element_text(size = 20),
-    axis.title.x = element_text(size = 18),
-    axis.title.y = element_text(size = 18),
-    legend.position = "top",
-    panel.grid.minor = element_blank()
+    axis.text.y = element_text(size = 8),
+    axis.text.x = element_text(size = 10),
+    panel.grid.major.y = element_blank(),
+    strip.text = element_blank()
   )
-print(p.panelB)
 
-# ggsave("Figure_2B.png", p.panelB, width = 11, height = 8, device = cairo_pdf)
-ggsave("Figure_2B.png", p.panelB, width = 11, height = 8)
+# Right: Phage Variants
+p_pvs <- ggplot(div.melt[type == "PVs"], aes(x = count, y = MGG_K_locus, fill = source)) +
+  geom_bar(stat = "identity", position = "stack", colour = "black", width = 0.7) +
+  scale_fill_manual(values = data.colors) +
+  labs(x = "No. of Phage Variants", y = NULL, fill = "Source") +
+  geom_hline(yintercept = line_index, linetype = "dashed", colour = "brown", linewidth = 1) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.y = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.x = element_text(size = 10),
+    panel.grid.major.y = element_blank(),
+    strip.text = element_blank()
+  )
 
-###############################
-## Plot Supplementary Figure
-###############################
+# Combine using patchwork
+p_combined <- p_scs + p_pvs + plot_layout(ncol = 2, guides = "collect") & theme(legend.position = "right")
 
-dir.create("suppl-figs")
+# Save to A4 landscape (297mm × 210mm)
+p_combined_outfile <- file.path(suppl.fig.dir, 'Supp_Figure_SCs_and_PVs_SideBySide.pdf')
+ggsave(p_combined_outfile, p_combined, width = 10, height = 14, units = "in", device = cairo_pdf)
+
+
+#### --------------------------------- ####
+#### Phage completeness for all K-loci ####
+#### --------------------------------- ####
 
 # Load the K-locus Summary Table (containing number of SCs per K-locus)
 # Assuming the table name is `k_locus_summary`
@@ -162,7 +189,7 @@ p.completeness.all <- ggplot(prophage_completeness, aes(x = reorder(MGG_K_locus,
     axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 12),
     axis.text.y = element_text(size = 12),
     legend.position = "none",
-    panel.grid.major.x = element_blank(),
+    panel.grid.major.x = element_line(color = "gray80", linetype = "dotted"),
     panel.grid.minor = element_blank()
   )
 
@@ -185,12 +212,15 @@ p.completeness.pv95 <- ggplot(phage_variant_completeness, aes(x = reorder(MGG_K_
     axis.text.x = element_text(angle = 45, vjust = 1, hjust = 1, size = 12),
     axis.text.y = element_text(size = 12),
     legend.position = "none",
-    panel.grid.major.x = element_blank(),
+    panel.grid.major.x = element_line(color = "gray80", linetype = "dotted"),
     panel.grid.minor = element_blank()
   )
 
-p.completeness.all.outfile <- "suppl-figs/suppl-completeness-all.png"
-p.completeness.p95.outfile <- "suppl-figs/suppl-completeness-p95.png"
+p.completeness.all.outfile <- "suppl-completeness-all.png"
+p.completeness.p95.outfile <- "suppl-completeness-p95.png"
 
-ggsave(p.completeness.all.outfile, p.completeness.all, width = 15, height = 7)
-ggsave(p.completeness.p95.outfile, p.completeness.pv95, width = 15, height = 7)
+p.completeness <- p.completeness.all / p.completeness.pv95 + plot_layout(nrow = 2, guides = "collect") & theme(legend.position = "right")
+p.completeness.outfile <- file.path(suppl.fig.dir, "Supp_Figure_Phage-Completeness.pdf")
+
+ggsave(p.completeness.outfile, p.completeness, width = 11, height = 12)
+
