@@ -1,7 +1,7 @@
 paths:
   mgg:
     db_input_rel: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/3_GWAS/2025-05-13_KLEBDATA_LIGHT_GWAS/4_ANALYZE/2_AGGREGATED_DATA'
-    ecod_domains_input: 'MGG Dropbox/Databases/hhsuite/ECOD_F70/ecod.develop263.F70.domains.txt'
+    ecod_domains_input: 'MGG Dropbox/Databases/hhpred/ECOD/ECOD_F70_20200207/ecod.develop263.F70.domains.txt'
   rafal:
     main: "/Users/rmostowy"
     db_output_rel: 'Data/gwas-figs'

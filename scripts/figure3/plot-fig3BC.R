@@ -128,7 +128,9 @@ gwas.results.per.k.plot$k.locus <- factor(gwas.results.per.k.plot$k.locus, level
 star_shapes <- c("PCI80C80" = 6, "PCI50C50" = 14, "PCI80C50" = 9, 
                  "PCI50C80" = 13, "PCI00C80" = 11, "PCI00C50" = 15)
 
-plot.gwas <- ggplot(gwas.results.per.k.plot, aes(x = k.locus, y = recall, color = ecod1_adjusted, shape = clustering)) +
+# Remove K-loci with no hits
+gwas.results.per.k.plot.sub <- gwas.results.per.k.plot[!is.na(clustering)]
+plot.gwas <- ggplot(gwas.results.per.k.plot.sub, aes(x = k.locus, y = recall, color = ecod1_adjusted, shape = clustering)) +
   geom_star(aes(fill = ecod1_adjusted, starshape = clustering), size = 8, alpha = 0.8, color = "black") +   # Ensures black outline on all shapes
   scale_fill_manual(values = ecod_all_colors, na.translate = FALSE) +
   scale_color_manual(values = ecod_all_colors, na.translate = FALSE) +  
@@ -149,7 +151,31 @@ plot.gwas <- ggplot(gwas.results.per.k.plot, aes(x = k.locus, y = recall, color 
       override.aes = list(starshape = 15, size = 5, color = "black")
     )  # Changes ECOD fill legend to a circle (shape 21)
   )
-ggsave("Figure3B.pdf", plot.gwas, width = 12.5, height = 5)
+ggsave("Figure3B.pdf", plot.gwas, width = 10, height = 5)
+
+plot.gwas.all <- ggplot(gwas.results.per.k.plot, aes(x = k.locus, y = recall, color = ecod1_adjusted, shape = clustering)) +
+  geom_star(aes(fill = ecod1_adjusted, starshape = clustering), size = 8, alpha = 0.8, color = "black") +   # Ensures black outline on all shapes
+  scale_fill_manual(values = ecod_all_colors, na.translate = FALSE) +
+  scale_color_manual(values = ecod_all_colors, na.translate = FALSE) +  
+  scale_starshape_manual(values = star_shapes, na.translate = FALSE) +  
+  theme_minimal(base_size = 14) +  
+  labs(x = "K Locus",  
+       y = "Recall",  
+       starshape = "Clustering Level",   # Custom legend title for clustering
+       fill = "ECOD Domains") +  # Custom legend title for ECOD1 annotations
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),  
+        legend.key = element_blank()) +  # Removes black rectangles from legend
+  scale_y_continuous(limits = c(0, 1)) + 
+  guides(
+    starshape = guide_legend(
+      override.aes = list(size = 5, size = 4, color = "black")
+    ),
+    fill = guide_legend(
+      override.aes = list(starshape = 15, size = 5, color = "black")
+    )  # Changes ECOD fill legend to a circle (shape 21)
+  )
+
+ggsave("suppl-figs/Supp_max_recall.pdf", plot.gwas.all, width = 12.5, height = 5)
 
 
 ######################
