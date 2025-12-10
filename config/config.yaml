@@ -23,7 +23,7 @@ data:
   
 
 params:
-  sc_cutoff: 8
+  sc_cutoff: 10
   sc_cutoff_gwas: 10
   phrogs_prob: 0.9
   phrogs_qcov: 0.3

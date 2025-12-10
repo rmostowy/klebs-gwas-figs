@@ -110,9 +110,9 @@ p.panelB <- ggplot(diversity.data.melted, aes(x = MGG_K_locus, y = count, fill =
   scale_fill_manual(values = data.colors) +  # Red & Green
   theme_minimal(base_size = 14) +
   # ✅ Add geom_hline() but restrict it to "Sequence Clusters" facet
-  geom_hline(data = subset(diversity.data.melted, facet_group == "Sequence Clusters"), 
-             aes(yintercept = SC.CUTOFF.GWAS), 
-             linetype = "dashed", color = col.brown, linewidth = 1.2) +
+  # geom_hline(data = subset(diversity.data.melted, facet_group == "Sequence Clusters"), 
+  #            aes(yintercept = SC.CUTOFF.GWAS), 
+  #            linetype = "dashed", color = col.brown, linewidth = 1.2) +
   labs(
     x = "K-locus",
     y = "Count",
