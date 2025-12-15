@@ -7,6 +7,9 @@ paths:
     db_output_rel: 'Data/gwas-figs'
   janusz:
     main: "/Users/januszkoszucki"
+    figshare_data: "MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/3_GWAS/FIGSHARE/DATA_ACCOMPANYING_THE_MANUSCRIPT"
+    figshare_gwas: "MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/3_GWAS/FIGSHARE/GWAS_RESULTS_ACCOMPANYING_THE_MANUSCRIPT"
+    output: "Downloads/gwas-figs"
   bogna:
     main: "/Users/bsmug"
     raw_db_input_rel: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/2_PROPHAGES'
