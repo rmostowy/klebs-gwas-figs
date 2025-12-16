@@ -6,6 +6,7 @@ suppressWarnings(library(ggtree))
 suppressWarnings(library(ggtreeExtra))
 suppressWarnings(library(ggplot2))
 suppressWarnings(library(RColorBrewer))
+suppressWarnings(library(patchwork))
 
 ### load config
 config.filename <- file.path(rprojroot::find_rstudio_root_file(), "config", "config.yaml")
@@ -96,6 +97,11 @@ dir.create(suppl.fig.dir, showWarnings = F, recursive = T)
 # Use full dataset, including low-SC K-loci
 diversity.data.full <- merge(k_locus_summary, phage_summary, by = "MGG_K_locus")
 diversity.data.full <- diversity.data.full[MGG_K_locus != "UNK"]
+k.locus.order <- diversity.data[order(-total_SCs)]$MGG_K_locus
+
+k.locus.order.num <- as.numeric(gsub("KL", "", k.locus.order))
+k.locus.order.index <- sort(k.locus.order.num, index.return = T)$ix
+k.locus.order.new <- k.locus.order[k.locus.order.index]
 
 # Melt and annotate
 div.melt <- melt(diversity.data.full, 
@@ -174,9 +180,10 @@ k_locus_summary <- k_locus_summary[total_SCs >= SC.CUTOFF]
 
 # Merge completeness data with K-locus summary to ensure proper sorting
 prophage_completeness <- merge(prophage.metadata[, .(MGG_K_locus, completeness)], k_locus_summary, by = "MGG_K_locus")
+prophage_completeness$MGG_K_locus <- factor(prophage_completeness$MGG_K_locus, levels = k.locus.order.new)
 
 # Plot the distribution of prophage completeness per K-locus (Jitter Plot)
-p.completeness.all <- ggplot(prophage_completeness, aes(x = reorder(MGG_K_locus, -total_SCs), y = completeness)) +
+p.completeness.all <- ggplot(prophage_completeness, aes(x = MGG_K_locus, y = completeness)) +
   geom_boxplot(outlier.shape = NA, fill = "#A6CEE3", color = "black", alpha = 0.6) + 
   geom_jitter(width = 0.2, alpha = 0.5, color = "#1A85FF") +  # Blue points for clarity
   theme_minimal(base_size = 14) +
@@ -198,8 +205,9 @@ phage_variant_completeness <- prophage.metadata[, .(phage_variant_completeness =
 
 # Merge with K-locus summary for proper sorting
 phage_variant_completeness <- merge(phage_variant_completeness, k_locus_summary, by = "MGG_K_locus")
+phage_variant_completeness$MGG_K_locus <- factor(phage_variant_completeness$MGG_K_locus, levels = k.locus.order.new)
 
-p.completeness.pv95 <- ggplot(phage_variant_completeness, aes(x = reorder(MGG_K_locus, -total_SCs), y = phage_variant_completeness)) +
+p.completeness.pv95 <- ggplot(phage_variant_completeness, aes(x = MGG_K_locus, y = phage_variant_completeness)) +
   geom_jitter(width = 0.2, alpha = 0.5, color = "#D73027") +  # Red points for clarity
   geom_boxplot(outlier.shape = NA, fill = "#A6CEE3", color = "black", alpha = 0.6) + 
   theme_minimal(base_size = 14) +
