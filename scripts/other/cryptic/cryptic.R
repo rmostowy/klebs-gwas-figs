@@ -25,15 +25,31 @@ phrogs.tcov.fig5 <- cfg$params$phrogs_tcov_fig5
 ### LOAD DATA ###
 # GWAS data
 gwas.data.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$raw_db_input_rel)
-gwas.depos.path <- file.path(cfg$paths$bogna$main, cfg$paths$mgg$db_input_rel)
-
 prophage.metadata.path = file.path(gwas.data.path,'/prophages_metadata.tsv')
 pcs2proteins.dir = paste0(gwas.data.path, "/pcs2proteins.tsv")
 raw.annots.dir = paste0(gwas.data.path, "/raw_hhsuite.tsv")
-depos.prophages.dir = paste0(gwas.depos.path, '/depos_prophages.tsv')
-tested.depos.raw = fread(depos.prophages.dir) 
 
-#bogna's local path: data.table::fread("/Users/bsmug/MGG Dropbox/Bogna Smug/Projects/2025_Phage_EcoEvo/Klebsiella_data/data/raw/depos_prophages.tsv") 
+gwas.suppl.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$supplement_data)
+supl.table.st5.dir = paste0(gwas.suppl.path, "/SupplementaryTable_S5.xlsx")
+supl.table.st6.dir = paste0(gwas.suppl.path, "/SupplementaryTable_S6.xlsx")
+
+
+tableST5 = readxl::read_xlsx(supl.table.st5.dir)
+tableST6 = readxl::read_xlsx(supl.table.st6.dir)
+tested.depos.raw = tableST5 %>%
+  rename(proteinID_wetlab = proteinID) %>%
+  distinct(proteinID_wetlab, active) %>%
+  inner_join(tableST6 %>% distinct(proteinID_wetlab, prophageID), by = "proteinID_wetlab") %>%
+  mutate(active = if_else(active == "true", TRUE, if_else(active == "false", FALSE, NA))) 
+
+# Original table with prophageId and proteinID and activity of tested depos used previously
+# Note the order of proteins in the table is different from the supplementary one.
+# gwas.depos.path <- file.path(cfg$paths$bogna$main, cfg$paths$mgg$db_input_rel)
+# depos.prophages.dir = paste0(gwas.depos.path, '/depos_prophages.tsv')
+# tested.depos.raw = fread(depos.prophages.dir) 
+# bogna's local path: data.table::fread("/Users/bsmug/MGG Dropbox/Bogna Smug/Projects/2025_Phage_EcoEvo/Klebsiella_data/data/raw/depos_prophages.tsv") 
+
+
 type.colors = c("expressed & active" = "darkred", "not expressed \n or not active" = "deepskyblue")
 prophage_data = data.table::fread(prophage.metadata.path)
 
@@ -73,7 +89,7 @@ prophage.proteins.with.phrogs =  pcs2proteins %>%
 
 
 tested.depos = tested.depos.raw %>% 
-  select(proteinID_wetlab, prophageID, active, `expression level`) %>%
+  select(proteinID_wetlab, prophageID, active) %>%
   left_join(prophage_data, by = "prophageID") %>% 
   mutate(type = if_else(active,  "expressed & active", "not expressed \n or not active")) 
 
@@ -94,7 +110,7 @@ fisher.test(tbl)
 p_to_star <- function(p) {
   ifelse(p < 0.001, "***",
          ifelse(p < 0.01, "**",
-                ifelse(p < 0.05, "*", "NS")
+                ifelse(p < 0.05, "*", "NS.")
          )
   )
 }

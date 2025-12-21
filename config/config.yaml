@@ -12,7 +12,8 @@ paths:
     output: "Downloads/gwas-figs"
   bogna:
     main: "/Users/bsmug"
-    raw_db_input_rel: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/2_PROPHAGES'
+    raw_db_input_rel: "MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/2_PROPHAGES"
+    supplement_data:  "MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/3_GWAS/MANUSCRIPT/supplement/SupplementaryTables"
     
 data:
   bact_tree: 'bacteria_iqtree.nwk'
