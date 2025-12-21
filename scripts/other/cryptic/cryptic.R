@@ -25,14 +25,15 @@ phrogs.tcov.fig5 <- cfg$params$phrogs_tcov_fig5
 ### LOAD DATA ###
 # GWAS data
 gwas.data.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$raw_db_input_rel)
+gwas.depos.path <- file.path(cfg$paths$bogna$main, cfg$paths$mgg$db_input_rel)
+
 prophage.metadata.path = file.path(gwas.data.path,'/prophages_metadata.tsv')
 pcs2proteins.dir = paste0(gwas.data.path, "/pcs2proteins.tsv")
 raw.annots.dir = paste0(gwas.data.path, "/raw_hhsuite.tsv")
-protein.table.filename <- paste0(cfg$paths$bogna$main, "/", cfg$paths$mgg$db_input_rel, '/depos_prophages.tsv')
-tested.depos.raw = fread(protein.table.filename) 
+depos.prophages.dir = paste0(gwas.depos.path, '/depos_prophages.tsv')
+tested.depos.raw = fread(depos.prophages.dir) 
+
 #bogna's local path: data.table::fread("/Users/bsmug/MGG Dropbox/Bogna Smug/Projects/2025_Phage_EcoEvo/Klebsiella_data/data/raw/depos_prophages.tsv") 
-
-
 type.colors = c("expressed & active" = "darkred", "not expressed \n or not active" = "deepskyblue")
 prophage_data = data.table::fread(prophage.metadata.path)
 
@@ -209,5 +210,6 @@ p4n=p4   + guides(color = "none")
 p = (p2a | p2n) / (p3n | p4n) + plot_annotation(tag_levels = 'A') + plot_layout(guides = 'collect')
 p
 ggsave(filename =  'Activity_vs_cryptic.png', p, width = 25, height=25, units = "cm")
+ggsave(filename =  'Activity_vs_cryptic.pdf', p, width = 25, height=25, units = "cm")
 
 
