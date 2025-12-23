@@ -403,6 +403,7 @@ plot.phage.types.at.rbp = ggplot(quality.phage.types %>%
 fig5 = plot.gen.spec / plot.phage.types.at.rbp
 fig5 = fig5 +  plot_annotation(tag_levels = 'A') +  theme(plot.title = element_text(size = 20))
 ggsave(filename = 'Figure6.jpg', fig5, width = 12, height = 13)
+ggsave(filename = 'Figure6.pdf', fig5, width = 12, height = 13)
 
 ########################################################################
 # Look into quality prophages from our K loci and if they have multiple ecods at their RBPs
