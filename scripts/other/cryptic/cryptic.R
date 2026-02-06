@@ -105,6 +105,7 @@ p2a =ggplot(data = tested.depos) +
 p2a
  tbl <- table(tested.depos$type, tested.depos$completeness)
 fisher.test(tbl) 
+xlsx::write.xlsx(x=tested.depos %>% select(proteinID_wetlab, completeness, type), file = "Data_FigS7.xlsx", sheetName = "A")
 
 # Note geom_signif doesn't work with Fishers test when data has this format, so we will manually input the pre-computed p-values
 p_to_star <- function(p) {
@@ -148,6 +149,7 @@ p2=ggplot(tested.phages.freq %>% mutate(num.ST = as.integer(num.ST)), aes(x=type
   scale_y_continuous(breaks = scales::breaks_pretty(), limits = c(0,10)) +
   scale_color_manual(values = type.colors)
 p2
+xlsx::write.xlsx(x=tested.phages.freq %>% as.data.table(), file = "Data_FigS7.xlsx", sheetName = "B", append = TRUE)
 
 ## PHAGE CLUSTER SIZE
 #There is no significant difference in phage cluster size for phages with active and inactive depos
@@ -187,6 +189,9 @@ p3=ggplot(cluster.size.data, aes(x = type, y = num.prophages.in.cluster, col = t
   scale_y_continuous(breaks = scales::breaks_pretty()) +
   scale_color_manual(values = type.colors)
 p3
+xlsx::write.xlsx(x=cluster.size.data %>% 
+                   select(proteinID_wetlab, type, prophageID, wgrr95, num.prophages.in.cluster) %>% as.data.frame(), 
+                 file = "Data_FigS7.xlsx", sheetName = "C", append = TRUE)
 
 
 ## NUMBER OF TRANSPOSASES
@@ -218,7 +223,10 @@ p4=ggplot(transp.stats, aes(x = type, y = num.transposase, color = type)) +
   scale_color_manual(values = type.colors)
 
 p4
-
+xlsx::write.xlsx(x=transp.stats %>% 
+                   select(proteinID_wetlab, type, prophageID, num.transposase) %>%
+                   as.data.frame(), 
+                 file = "Data_FigS7.xlsx", sheetName = "D", append = TRUE)
 #Glue plots
 p2n=p2   + guides(color = "none")
 p3n=p3   + guides(color = "none")
