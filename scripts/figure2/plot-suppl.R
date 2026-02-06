@@ -167,7 +167,7 @@ p_combined <- p_scs + p_pvs + plot_layout(ncol = 2, guides = "collect") & theme(
 
 # Save to A4 landscape (297mm × 210mm)
 p_combined_outfile <- file.path(suppl.fig.dir, 'Supp_Figure_SCs_and_PVs_SideBySide.pdf')
-ggsave(p_combined_outfile, p_combined, width = 10, height = 14, units = "in", device = cairo_pdf)
+ggsave(p_combined_outfile, p_combined, width = 10, height = 14)
 
 
 #### --------------------------------- ####
