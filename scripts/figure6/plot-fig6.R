@@ -299,9 +299,7 @@ plot.gen.spec <- ggplot(rbp.clust.filtered.to.plot,
     legend.text = element_text(size = TEXT_SIZE)
   ) +
   guides(color = guide_legend(override.aes = list(size=6)))
-
-
-
+xlsx::write.xlsx(x=rbp.clust.filtered.to.plot %>% as.data.frame(), file = "Fig6.xlsx", sheetName = "A")
 #################################################
 # Fig 5b, now look at all complete prophages regardless of what data we had in GWAS
 # All prophage data, not only GWAS proteins
@@ -400,6 +398,8 @@ plot.phage.types.at.rbp = ggplot(quality.phage.types %>%
   xlab("") +
   ylab("Num. high quality\nnearly complete phages")
 
+xlsx::write.xlsx(x=quality.phage.types %>% as.data.frame(), file = "Figure6.xlsx", sheetName = "B", append = TRUE)
+
 fig5 = plot.gen.spec / plot.phage.types.at.rbp
 fig5 = fig5 +  plot_annotation(tag_levels = 'A') +  theme(plot.title = element_text(size = 20))
 ggsave(filename = 'Figure6.jpg', fig5, width = 12, height = 13)
@@ -431,6 +431,7 @@ upset(data = top.ecods.in.quality.phage.rbps,
 # one befpre is names of ECODs
 # first is the label
 dev.off()
+xlsx::write.xlsx(x=top.ecods.in.quality.phage.rbps %>% as.data.frame(), file = "suppl-figs/rbp_top_ecod_combinations.xlsx", sheetName = "S11")
 
 
 # Look at phages from our K loci that do have RBP but no top ECODs within them, what are neighbouting ECODs
@@ -464,6 +465,7 @@ ecods.around.phages.with.no.ecod.in.rbp = ggplot(ecods.in.phages.with.no.ecods.a
   xlab("ECOD detected near RBP") +
   ylab("Num. high quality prophages with no detected domains at RBP")
 ggsave(filename = 'suppl-figs/ecods.around.phages.with.no.ecod.in.rbp.jpg', ecods.around.phages.with.no.ecod.in.rbp, width = 8, height = 8)
+xlsx::write.xlsx(x=ecods.in.phages.with.no.ecods.at.rbps %>% as.data.frame(), file = "suppl-figs/ecods.around.phages.with.no.ecod.in.rbp.xlsx", sheetName = "S12")
 
 
 
@@ -517,5 +519,6 @@ aceltytransferase_phages = ggplot(acet.in.quality.phage.proteins) +
   #ylab("# High quality nearly complete phages")
   ylab("% High quality nearly complete phages")
 ggsave(filename =  'suppl-figs/acetyltransf_phages.jpg', aceltytransferase_phages, width = 13, height = 6)
+xlsx::write.xlsx(x=acet.in.quality.phage.proteins %>% as.data.frame(), file = "suppl-figs/acetyltransf_phages.xlsx", sheetName = "S14")
 
 
