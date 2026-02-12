@@ -135,3 +135,6 @@ print(p.panelB)
 # ggsave("Figure_2B.png", p.panelB, width = 11, height = 8, device = cairo_pdf)
 ggsave("Figure_2B.png", p.panelB, width = 11, height = 8)
 
+fwrite(diversity.data.melted, file = "data-fig2B.txt")
+
+

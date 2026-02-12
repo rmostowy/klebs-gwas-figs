@@ -169,6 +169,9 @@ p_combined <- p_scs + p_pvs + plot_layout(ncol = 2, guides = "collect") & theme(
 p_combined_outfile <- file.path(suppl.fig.dir, 'Supp_Figure_SCs_and_PVs_SideBySide.pdf')
 ggsave(p_combined_outfile, p_combined, width = 10, height = 14)
 
+div.melt.outfile <- file.path(suppl.fig.dir, "data-SideBySide.txt")
+fwrite(div.melt, file = div.melt.outfile)
+
 
 #### --------------------------------- ####
 #### Phage completeness for all K-loci ####
@@ -232,3 +235,5 @@ p.completeness.outfile <- file.path(suppl.fig.dir, "Supp_Figure_Phage-Completene
 
 ggsave(p.completeness.outfile, p.completeness, width = 11, height = 12)
 
+prophage_completeness.outfile <- file.path(suppl.fig.dir, "data-completeness.txt")
+fwrite(prophage_completeness, file = prophage_completeness.outfile)
