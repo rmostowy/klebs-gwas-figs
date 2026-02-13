@@ -124,11 +124,11 @@ summary.table <- longA[
 #############################
 
 condition_order <- c(
-  "protein",
   "substrate",
+  "protein",
+  "substrate+KL111-nbg",
   "substrate+KL2-nbg",
-  "substrate+KL55-nbg",
-  "substrate+KL111-nbg"
+  "substrate+KL55-nbg"
 )
 
 summary.table$condition <- factor(
@@ -156,7 +156,7 @@ condition_colors <- c(
 
 brewer.palette <- "Set3"
 panelA <- ggplot(summary.table, aes(x = time, y = value_mean, color = condition, fill = condition)) +
-  geom_ribbon(aes(ymin = value_mean - value_sd, ymax = value_mean + value_sd), alpha = 0.2, color = NA) +
+  geom_ribbon(aes(ymin = value_mean - value_sd, ymax = value_mean + value_sd), alpha = 0.4, color = "grey", linewidth = .1) +
   geom_line(size = 1) +
   labs(x = "Time (min)",
        y = "Absorbance at 405 nm (mean ± SD)",
@@ -190,11 +190,11 @@ summary.table.pr <- longB[
 ][order(condition)]
 
 condition_order <- c(
-  "protein",
   "substrate",
+  "protein",
+  "substrate+KL111",
   "substrate+KL2",
-  "substrate+KL55",
-  "substrate+KL111"
+  "substrate+KL55"
 )
 
 summary.table.pr$condition <- factor(
