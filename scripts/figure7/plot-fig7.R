@@ -21,7 +21,8 @@ if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable())
 ####################################################################
 
 # LOAD DATA
-data.fn <- '/Users/rmostowy/MGG Dropbox/Rafal Mostowy/Publications/Ongoing/Depo-GWAS/draft6/supplementary-tables/Table_S7.xlsx'
+
+data.fn <- file.path(cfg$paths$rafal$main, cfg$paths$rafal$table_s7)
 data.abs <- as.data.table(read_xlsx(data.fn, sheet = 1))
 data.pr <- as.data.table(read_xlsx(data.fn, sheet = 2))
 

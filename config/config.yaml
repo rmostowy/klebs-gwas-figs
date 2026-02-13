@@ -5,6 +5,7 @@ paths:
   rafal:
     main: "/Users/rmostowy"
     db_output_rel: 'Data/gwas-figs'
+    table_s7: 'MGG Dropbox/Rafal Mostowy/Publications/Ongoing/Depo-GWAS/draft6/supplementary-tables/Table_S7.xlsx'
   janusz:
     main: "/Users/januszkoszucki"
     figshare_data: "MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/3_GWAS/FIGSHARE/DATA_ACCOMPANYING_THE_MANUSCRIPT"
