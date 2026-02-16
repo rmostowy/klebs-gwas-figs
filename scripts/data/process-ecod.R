@@ -12,6 +12,9 @@ cfg <- yaml::read_yaml(config.filename)
 ############################### MAIN ###############################
 ####################################################################
 
+# ECOD data processed here can be downloaded from:
+# http://prodata.swmed.edu/ecod/complete/distribution
+
 ecod.domains.path <- file.path(cfg$paths$rafal$main, cfg$paths$mgg$ecod_domains_input)
 ecod.domains <- fread(
   ecod.domains.path,
