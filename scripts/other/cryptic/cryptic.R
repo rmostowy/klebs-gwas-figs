@@ -24,14 +24,19 @@ phrogs.tcov.fig5 <- cfg$params$phrogs_tcov_fig5
 
 ### LOAD DATA ###
 # GWAS data
-gwas.data.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$raw_db_input_rel)
+# gwas.data.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$raw_db_input_rel)
+gwas.data.path <- file.path(cfg$paths$rafal$main, cfg$paths$bogna$raw_db_input_rel)
 prophage.metadata.path = file.path(gwas.data.path,'/prophages_metadata.tsv')
 pcs2proteins.dir = paste0(gwas.data.path, "/pcs2proteins.tsv")
 raw.annots.dir = paste0(gwas.data.path, "/raw_hhsuite.tsv")
 
-gwas.suppl.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$supplement_data)
-supl.table.st5.dir = paste0(gwas.suppl.path, "/SupplementaryTable_S5.xlsx")
-supl.table.st6.dir = paste0(gwas.suppl.path, "/SupplementaryTable_S6.xlsx")
+# gwas.suppl.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$supplement_data)
+# supl.table.st5.dir = paste0(gwas.suppl.path, "/SupplementaryTable_S5.xlsx")
+# supl.table.st6.dir = paste0(gwas.suppl.path, "/SupplementaryTable_S6.xlsx")
+
+gwas.suppl.path <- file.path(cfg$paths$rafal$main, cfg$paths$bogna$supplement_data)
+supl.table.st5.dir = file.path(gwas.suppl.path, "S4_Table.xlsx")
+supl.table.st6.dir = file.path(gwas.suppl.path, "S5_Table.xlsx")
 
 
 tableST5 = readxl::read_xlsx(supl.table.st5.dir)
@@ -102,7 +107,7 @@ p2a =ggplot(data = tested.depos) +
   ylab("Num. tested depolymerases") +
   xlab("Completeness") +
   scale_fill_manual(values = type.colors)
-p2a
+# p2a
  tbl <- table(tested.depos$type, tested.depos$completeness)
 fisher.test(tbl) 
 xlsx::write.xlsx(x=tested.depos %>% select(proteinID_wetlab, completeness, type), file = "Activity_vs_cryptic.xlsx", sheetName = "A")
@@ -148,7 +153,7 @@ p2=ggplot(tested.phages.freq %>% mutate(num.ST = as.integer(num.ST)), aes(x=type
   ylab("Num. STs in which prophage cluster PV95 is detected in") +
   scale_y_continuous(breaks = scales::breaks_pretty(), limits = c(0,10)) +
   scale_color_manual(values = type.colors)
-p2
+# p2
 xlsx::write.xlsx(x=tested.phages.freq %>% as.data.table(), file = "Activity_vs_cryptic.xlsx", sheetName = "B", append = TRUE)
 
 ## PHAGE CLUSTER SIZE

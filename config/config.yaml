@@ -5,7 +5,7 @@ paths:
   rafal:
     main: "/Users/rmostowy"
     db_output_rel: 'Data/gwas-figs'
-    table_s7: 'MGG Dropbox/Rafal Mostowy/Publications/Ongoing/Depo-GWAS/draft6/supplementary-tables/Table_S7.xlsx'
+    data_s3: 'MGG Dropbox/Publications/2025/GWAS/submissions/7_PLOS-Biology-rev2/supplementary-data/S3_Data.xlsx'
   janusz:
     main: "/Users/januszkoszucki"
     figshare_dir: "MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/FIGSHARE/OUTPUT_DATA"
@@ -13,7 +13,7 @@ paths:
   bogna:
     main: "/Users/bsmug"
     raw_db_input_rel: "MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/2_PROPHAGES"
-    supplement_data:  "MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/3_GWAS/MANUSCRIPT/supplement/SupplementaryTables"
+    supplement_data:  'MGG Dropbox/Publications/2025/GWAS/submissions/7_PLOS-Biology-rev2/supplementary-tables'
     
 data:
   bact_tree: 'bacteria_iqtree.nwk'

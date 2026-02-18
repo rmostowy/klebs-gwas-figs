@@ -22,7 +22,7 @@ if (requireNamespace("rstudioapi", quietly = TRUE) && rstudioapi::isAvailable())
 
 # LOAD DATA
 
-data.fn <- file.path(cfg$paths$rafal$main, cfg$paths$rafal$table_s7)
+data.fn <- file.path(cfg$paths$rafal$main, cfg$paths$rafal$data_s3)
 data.abs <- as.data.table(read_xlsx(data.fn, sheet = 1))
 data.pr <- as.data.table(read_xlsx(data.fn, sheet = 2))
 
