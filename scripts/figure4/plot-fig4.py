@@ -1,3 +1,189 @@
+def generate_predictions_and_enzymes():
+    """
+    Generate the intermediate 'predictions_and_enzymes.tsv' table from three
+    supplementary Excel tables (S1, S3, S4) and the bacteria metadata table.
+
+    Uses global variables:
+        S1_Table_xlsx           – Path to S1_Table.xlsx  (lytic depolymerases)
+        S3_Table_xlsx           – Path to S3_Table.xlsx  (GWAS predictions)
+        S4_Table_xlsx           – Path to S4_Table.xlsx  (lysogenic depolymerases)
+        bacteria_table          – Path to bacteria.tsv
+        predictions_and_enzymes – Path where the output TSV will be written
+    """
+
+    import pandas as pd
+    import numpy as np
+
+    global S1_Table_xlsx
+    global S3_Table_xlsx
+    global S4_Table_xlsx
+    global bacteria_table
+    global predictions_and_enzymes
+
+    # ------------------------------------------------------------------
+    # STEP 1 – Process recombinant depolymerases (lysogenic + lytic)
+    # ------------------------------------------------------------------
+    print('Processing recombinant depolymerases...', end='\t')
+
+    # --- lysogenic (S4) ---
+    rename_lysogenic_dict = {
+        'protein seq': 'seq',
+        'expression level': 'expression',
+        'K_locus_specificity': 'specificity'
+    }
+    rename_lytic_dict = {
+        'K_locus_specificity': 'specificity',
+        'protein_seq': 'seq'
+    }
+    genscript_list = [
+        '0367_12', '0574_17', '0391_11', '0496_72', '021_14',
+        '391_03', '184_04', '145_08', '174_38', '164_08'
+    ]
+    recombinant_cols_step1 = [
+        'proteinID', 'report', 'group', 'expression',
+        'specificity', 'K_locus_host', 'seq'
+    ]
+
+    lysogenic_df = pd.read_excel(
+        S4_Table_xlsx,
+        sheet_name='S4A_Produced_depolymerases',
+        usecols=[0, 3, 5, 6, 18],
+        header=0,
+    ).rename(rename_lysogenic_dict, axis=1)
+
+    lytic_df = pd.read_excel(
+        S1_Table_xlsx,
+        sheet_name='2025-03-18_LITERATURE_SEARCH'
+    ).rename(rename_lytic_dict, axis=1)
+
+    # clean lysogenic
+    remove_na = ~((lysogenic_df['proteinID'].isna()) |
+                   (lysogenic_df['proteinID'] == 'GWAS proteins:'))
+    lysogenic_df = lysogenic_df.loc[remove_na].reset_index(drop=True)
+    ugly_string = lysogenic_df['specificity'].str.contains('-')
+    lysogenic_df.loc[ugly_string, 'specificity'] = 'NO_KL'
+
+    clean_expression_dict = {
+        'high': 'PRODUCED', 'medium': 'PRODUCED',
+        'low': 'PRODUCED', 'none': 'NOT_PRODUCED'
+    }
+    lysogenic_df['expression'] = lysogenic_df['expression'].replace(clean_expression_dict)
+
+    # assign groups
+    is_produced = (lysogenic_df['expression'] == 'PRODUCED')
+    is_active = ~(lysogenic_df['specificity'].str.contains('NO_KL'))
+    is_genscript = lysogenic_df['proteinID'].isin(genscript_list)
+    is_zdk = ~(lysogenic_df['proteinID'].isin(genscript_list))
+
+    zdk_not_produced = is_zdk & ~is_produced
+    zdk_produced_active = is_zdk & is_produced & is_active
+    zdk_produced_inactive = is_zdk & is_produced & ~is_active
+
+    genscript_not_produced = is_genscript & ~is_produced
+    genscript_produced_active = is_genscript & is_produced & is_active
+    genscript_produced_inactive = is_genscript & is_produced & ~is_active
+
+    lysogenic_df.loc[zdk_not_produced, 'group'] = 'lysogenic_zdk_not_produced'
+    lysogenic_df.loc[zdk_produced_active, 'group'] = 'lysogenic_zdk_produced_active'
+    lysogenic_df.loc[zdk_produced_inactive, 'group'] = 'lysogenic_zdk_produced_inactive'
+
+    lysogenic_df.loc[genscript_not_produced, 'group'] = 'lysogenic_genscript_not_produced'
+    lysogenic_df.loc[genscript_produced_active, 'group'] = 'lysogenic_genscript_produced_active'
+    lysogenic_df.loc[genscript_produced_inactive, 'group'] = 'lysogenic_genscript_produced_inactive'
+
+    lysogenic_df['report'] = (lysogenic_df['proteinID'] + '_' +
+                              lysogenic_df['specificity'] + '_' +
+                              lysogenic_df['expression'] + '_HOST_' +
+                              lysogenic_df['K_locus_host'])
+
+    # --- lytic (S1) ---
+    lytic_df['group'] = 'lytic'
+    lytic_df['report'] = lytic_df['proteinID']
+
+    # combine
+    recombinant_df = pd.concat([lysogenic_df, lytic_df])
+    recombinant_df = recombinant_df[recombinant_cols_step1]
+    print('Done!')
+
+    # ------------------------------------------------------------------
+    # STEP 2 – Combine recombinant enzymes with GWAS predictions (S3)
+    # ------------------------------------------------------------------
+    print('Combining predictions and enzymes...', end='\t')
+
+    recombinant_cols_step2 = [
+        'proteinID', 'group', 'expression',
+        'specificity', 'K_locus_host', 'seq'
+    ]
+    prediction_cols = ['locus', 'PC', 'prediction_strength', 'seq']
+
+    bacteria_df = pd.read_csv(bacteria_table, sep='\t')
+    prediction_df = pd.read_excel(S3_Table_xlsx, sheet_name='GWAS predictions')
+
+    # clean recombinant
+    recombinant_df = recombinant_df[recombinant_cols_step2].rename({'group': 'source'}, axis=1)
+    recombinant_df['expression'] = recombinant_df['expression'].fillna('PRODUCED')
+    recombinant_df.loc[recombinant_df['source'].str.contains('zdk'), 'source'] = 'PROPHAGE_ZDKLAB'
+    recombinant_df.loc[recombinant_df['source'].str.contains('genscript'), 'source'] = 'GENSCRIPT'
+    recombinant_df.loc[recombinant_df['source'].str.contains('lytic'), 'source'] = 'LITERATURE_SEARCH'
+
+    recombinant_df['activity'] = 'ACTIVE'
+    recombinant_df.loc[recombinant_df['specificity'].str.contains('NO_KL'), 'activity'] = 'INACTIVE'
+    recombinant_df.loc[recombinant_df['expression'].str.contains('NOT_PRODUCED'), 'activity'] = np.nan
+    recombinant_df.loc[recombinant_df['expression'].str.contains('NOT_PRODUCED'), 'specificity'] = np.nan
+    recombinant_df.loc[recombinant_df['activity'] == 'INACTIVE', 'specificity'] = np.nan
+
+    # fix literature search specificity naming: K → KL, KLL → KL, KLN → KN
+    recombinant_df.loc[recombinant_df['source'] == 'LITERATURE_SEARCH', 'specificity'] = \
+        recombinant_df.loc[recombinant_df['source'] == 'LITERATURE_SEARCH', 'specificity'].str.replace('K', 'KL')
+
+    recombinant_df.loc[recombinant_df['source'] == 'LITERATURE_SEARCH', 'specificity'] = \
+        recombinant_df.loc[recombinant_df['source'] == 'LITERATURE_SEARCH', 'specificity'].str.replace('KLL', 'KL')
+
+    recombinant_df.loc[recombinant_df['source'] == 'LITERATURE_SEARCH', 'specificity'] = \
+        recombinant_df.loc[recombinant_df['source'] == 'LITERATURE_SEARCH', 'specificity'].str.replace('KLN', 'KN')
+
+    # clean literature search proteinID (remove suffix after last underscore)
+    recombinant_df.loc[recombinant_df['source'] == 'LITERATURE_SEARCH', 'proteinID'] = \
+        recombinant_df.loc[recombinant_df['source'] == 'LITERATURE_SEARCH', 'proteinID'].str.rsplit('_', n=1).str[0]
+
+    # clean prediction
+    prediction_df = prediction_df[prediction_cols].rename(
+        {'locus': 'specificity', 'PC': 'proteinID'}, axis=1)
+    prediction_df = prediction_df.dropna()
+    prediction_df['source'] = 'PREDICTION'
+
+    # concat
+    depos_df = pd.concat([recombinant_df, prediction_df])
+    depos_df['assing_K_locus_host_when_specificity_missing'] = \
+        depos_df['specificity'].fillna(depos_df['K_locus_host'])
+
+    # strains per K locus
+    kaspah_ref_df = (bacteria_df
+                     .query('collection == "kaspah_complete"')
+                     .groupby("MGG_K_locus").size().reset_index()
+                     .rename({'MGG_K_locus': 'specificity', 0: '# KASPAH-REF'}, axis=1))
+    ksc_gwas_df = (bacteria_df
+                   .groupby("MGG_K_locus").size().reset_index()
+                   .rename({'MGG_K_locus': 'specificity', 0: '# GWAS_KSC'}, axis=1))
+    strains_availability = kaspah_ref_df.merge(ksc_gwas_df, on='specificity', how='outer')
+    strains_availability['assing_K_locus_host_when_specificity_missing'] = strains_availability['specificity']
+    strains_availability = strains_availability.drop('specificity', axis=1)
+
+    # merge
+    depos_df = depos_df.merge(strains_availability,
+                              on='assing_K_locus_host_when_specificity_missing', how='left')
+
+    # save
+    final_cols = [
+        'proteinID', 'source', 'expression',
+        'assing_K_locus_host_when_specificity_missing',
+        'specificity', 'K_locus_host', '# KASPAH-REF', '# GWAS_KSC',
+        'activity', 'prediction_strength', 'seq'
+    ]
+    depos_df[final_cols].to_csv(predictions_and_enzymes, sep='\t', index=False)
+    print('Done!')
+
+
 def FIGURE4_PANELA(cell_number_color="#000000"):
     """
     Revised FIGURE4_PANELA visualization that:
@@ -852,6 +1038,10 @@ def FIGURE4_PANELC():
     plt.savefig(panelC_pdf_path, format='pdf', bbox_inches='tight')
     plt.close(fig)
 
+def remove_file(path):
+    from pathlib import Path
+    Path(path).unlink(missing_ok=True)
+
 
 
 if __name__ == "__main__":
@@ -863,41 +1053,48 @@ if __name__ == "__main__":
     # input
     config_yaml = '../../config/config.yaml'
 
-
     # Load the entire YAML document into a Python object
     with open(config_yaml, 'r') as f:
         config_dict = yaml.safe_load(f)
 
     # params
     custom_gwas_kloci = config_dict['params']['custom_kl_list'].split(' ')
+    custom_gwas_kloci.append('KL146')
 
-    # paths
-    user_path = config_dict['paths']['janusz']['main']
-    db_input_rel_path = config_dict['paths']['mgg']['db_input_rel']
-
-    gwas_dir = Path(user_path, db_input_rel_path)
-    output_dir = Path().cwd()
-    suppl_output_dir = Path(output_dir, 'suppl-figs')
-
-    # create
-    suppl_output_dir.mkdir(exist_ok=True, parents=True)
-
+    # I/O paths
     
-    # FIGURE4 PANELA
-    bacteria_table = Path(gwas_dir, 'bacteria.tsv')
-    predictions_and_enzymes = Path(gwas_dir, 'predictions_and_enzymes.tsv')
-    panelA_pdf_path = Path(output_dir, 'Figure4A.pdf')
+    # input directories
+    user_path = config_dict['paths']['janusz']['main']
+    figshare_dir = Path(user_path, config_dict['paths']['janusz']['figshare_dir'])
+    supplement_dir = Path(user_path, config_dict['paths']['janusz']['supplement_dir'])
 
-    # FIGURE4 PANELB
+    # input paths
+    bacteria_table = Path(figshare_dir, 'GWAS/1_INTERMEDIATE/1_PROCESSED_INPUT/PROTMINLEN300_SPECIES-KPN-KVV-KQQ-KQS_MINNCONTIGS500/bacteria.tsv')
+    S1_Table_xlsx = Path(supplement_dir, 'S1_Table.xlsx')
+    S3_Table_xlsx = Path(supplement_dir, 'S3_Table.xlsx')
+    S4_Table_xlsx = Path(supplement_dir, 'S4_Table.xlsx')
+
+
+    # output directories
+    output_dir = Path().cwd()
+    suppl_figs_dir = Path(Path().cwd(), 'suppl-figs')
+    tmp_blast_dir = Path(user_path, 'tmp_blast_dir')
+    
+    # output paths
+    panelA_pdf_path = Path(output_dir, 'Figure4A.pdf')
     nodes_outfile = Path(output_dir, 'Figure4B_NODES.tsv')
     edges_outfile = Path(output_dir, 'Figure4B_EDGES.tsv')
-    tmp_blast_dir = Path(user_path, 'tmp_blast_dir')
+    panelC_pdf_path = Path(suppl_figs_dir, 'recombinant-host.pdf')
+    predictions_and_enzymes = Path(output_dir, 'predictions_and_enzymes.tsv')
 
-    # FIGURE4 PANELC
-    panelC_pdf_path = Path(suppl_output_dir, 'recombinant-host.pdf')
+    # create dirs
+    suppl_figs_dir.mkdir(exist_ok=True, parents=True)
 
-
-    # EXECUTE
+    # run
+    generate_predictions_and_enzymes()
     FIGURE4_PANELA()
-    # FIGURE4_PANELB()
-    # FIGURE4_PANELC()
+    FIGURE4_PANELB()
+    FIGURE4_PANELC()
+
+    # clean
+    remove_file(predictions_and_enzymes)
