@@ -17,8 +17,7 @@ CONFIG_PATH <- normalizePath(file.path(SCRIPT_DIR, "..", "..", "..", "config", "
 
 # ---- Read config and construct paths ----
 cfg          <- yaml::read_yaml(CONFIG_PATH)
-FIGSHARE_DIR <- file.path(cfg$paths$janusz$main, cfg$paths$janusz$figshare_data, "REVIEW")
-OUTPUT_DIR   <- file.path(cfg$paths$janusz$main, cfg$paths$janusz$output, "STS_GEODISTRIBUTION")
+OUTPUT_DIR   <- file.path(getwd())
 TABLES_DIR   <- file.path(OUTPUT_DIR, "tables")
 PLOTS_DIR    <- file.path(OUTPUT_DIR, "plots")
 dir.create(PLOTS_DIR, recursive = TRUE, showWarnings = FALSE)

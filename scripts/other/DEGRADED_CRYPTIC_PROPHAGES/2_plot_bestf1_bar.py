@@ -24,16 +24,20 @@ def load_yaml_dict(path: str | Path) -> Dict[str, Any]:
 
 
 # ----------------------- USER CONFIG -----------------------
-CONFIG_PATH = Path('../../../config/config.yaml')
-CONFIG_DICT = load_yaml_dict(CONFIG_PATH)
+config_path = Path('../../../config/config.yaml')
+config_dict = load_yaml_dict(config_path)
 
-OUTPUT_DIR = Path(CONFIG_DICT['paths']['janusz']['main']) / Path(CONFIG_DICT['paths']['janusz']['output'])
+# input direcoties
+user_path = config_dict['paths']['janusz']['main']
+figshare_dir = Path(user_path, config_dict['paths']['janusz']['figshare_dir'])
+supplement_dir = Path(user_path, config_dict['paths']['janusz']['supplement_dir'])
 
-OUTPUT_DIR = OUTPUT_DIR / "DEGRADED_CRYPTIC_PROPHAGES"
-FIGURES_DIR = OUTPUT_DIR / "plots"
-TABLES_DIR = OUTPUT_DIR / "tables"
+# output directories
+FIGURES_DIR = Path().cwd() / "plots"
+TABLES_DIR = Path().cwd() / "tables"
 
-in_path = Path(TABLES_DIR, 'bestf1.tsv')
+# output paths
+in_path = Path(TABLES_DIR, "bestf1.tsv")
 out_png = FIGURES_DIR / "bestf1_bar.png"
 # out_pdf = FIGURES_DIR / "bestf1_bar.pdf"
 

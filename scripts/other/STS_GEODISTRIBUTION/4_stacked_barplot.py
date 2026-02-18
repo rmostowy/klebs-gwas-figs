@@ -17,13 +17,17 @@ def load_yaml_dict(path: str | Path) -> Dict[str, Any]:
     return data
 
 # ----------------------- USER CONFIG -----------------------
-CONFIG_PATH = Path('../../../config/config.yaml')
-CONFIG_DICT = load_yaml_dict(CONFIG_PATH)
+config_path = Path('../../../config/config.yaml')
+config_dict = load_yaml_dict(config_path)
 
-FIGSHARE_DIR = Path(CONFIG_DICT['paths']['janusz']['main']) / Path(CONFIG_DICT['paths']['janusz']['figshare_data']) / 'REVIEW'
-OUTPUT_DIR   = Path(CONFIG_DICT['paths']['janusz']['main']) / Path(CONFIG_DICT['paths']['janusz']['output']) / "STS_GEODISTRIBUTION"
+# input direcoties
+user_path = config_dict['paths']['janusz']['main']
+figshare_dir = Path(user_path, config_dict['paths']['janusz']['figshare_dir'])
+supplement_dir = Path(user_path, config_dict['paths']['janusz']['supplement_dir'])
+
+OUTPUT_DIR = Path.cwd()
+TABLES_DIR = OUTPUT_DIR / "tables"
 PLOTS_DIR    = OUTPUT_DIR / "plots"
-TABLES_DIR   = OUTPUT_DIR / "tables"
 
 # ----------------------- PATHS -----------------------
 IN_PATH  = Path(TABLES_DIR, "metadata.tsv")  # must have: dataset, genomeID, ST, country, continent
