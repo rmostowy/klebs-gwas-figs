@@ -26,9 +26,9 @@ phrogs.tcov.fig5 <- cfg$params$phrogs_tcov_fig5
 # GWAS data
 # gwas.data.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$raw_db_input_rel)
 gwas.data.path <- file.path(cfg$paths$rafal$main, cfg$paths$bogna$raw_db_input_rel)
-prophage.metadata.path = file.path(gwas.data.path,'/prophages_metadata.tsv')
-pcs2proteins.dir = paste0(gwas.data.path, "/pcs2proteins.tsv")
-raw.annots.dir = paste0(gwas.data.path, "/raw_hhsuite.tsv")
+prophage.metadata.path = file.path(gwas.data.path,'prophages_metadata.tsv')
+pcs2proteins.dir = file.path(gwas.data.path, "pcs2proteins.tsv")
+raw.annots.dir = file.path(gwas.data.path, "raw_hhsuite.tsv")
 
 # gwas.suppl.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$supplement_data)
 # supl.table.st5.dir = paste0(gwas.suppl.path, "/SupplementaryTable_S5.xlsx")

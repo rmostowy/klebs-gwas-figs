@@ -1,7 +1,7 @@
 paths:
   mgg:
-    db_input_rel: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/3_GWAS/2025-05-13_KLEBDATA_LIGHT_GWAS/4_ANALYZE/2_AGGREGATED_DATA'
-    ecod_domains_input: 'MGG Dropbox/Databases/hhsuite/ECOD_F70/ecod.develop263.F70.domains.txt'
+    db_input_rel: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/FIGSHARE/OUTPUT_DATA/GWAS/4_ANALYZE/2_AGGREGATED_DATA'
+    ecod_domains_input: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/FIGSHARE/OTHER/ecod.develop263.F70.domains.txt'
   rafal:
     main: "/Users/rmostowy"
     db_output_rel: 'Data/gwas-figs'
@@ -12,7 +12,7 @@ paths:
     supplement_dir: "MGG Dropbox/Publications/2025/GWAS/submissions/7_PLOS-Biology-rev2/supplementary-tables"
   bogna:
     main: "/Users/bsmug"
-    raw_db_input_rel: "MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/2_PROPHAGES"
+    raw_db_input_rel: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/FIGSHARE/INPUT_DATA/PROPHAGES_METADATA'
     supplement_data:  'MGG Dropbox/Publications/2025/GWAS/submissions/7_PLOS-Biology-rev2/supplementary-tables'
     
 data:

@@ -85,7 +85,8 @@ names(custom_colors) = ECOD_labeller(names(custom_colors))
 
 ### LOAD DATA ###
 # GWAS data
-gwas.data.path <- file.path(cfg$paths$bogna$main, cfg$paths$mgg$db_input_rel)
+# gwas.data.path <- file.path(cfg$paths$bogna$main, cfg$paths$mgg$db_input_rel)
+gwas.data.path <- file.path(cfg$paths$rafal$main, cfg$paths$mgg$db_input_rel)
 
 gwas.metadata.filename <- file.path(gwas.data.path,"bacteria.tsv")
 gwas.metadata <- fread(gwas.metadata.filename)
@@ -95,7 +96,8 @@ gwas.prophages <- fread(gwas.prophage.filename) %>%
   distinct(prophageID)
 
 # RAW PROPHAGE DATA
-raw.prophage.data.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$raw_db_input_rel)
+# raw.prophage.data.path <- file.path(cfg$paths$bogna$main, cfg$paths$bogna$raw_db_input_rel)
+raw.prophage.data.path <- file.path(cfg$paths$rafal$main, cfg$paths$bogna$raw_db_input_rel)
 
 raw.annots.filename <- file.path(raw.prophage.data.path, "raw_hhsuite.tsv")
 annot_table = read.table(raw.annots.filename, 
