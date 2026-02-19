@@ -73,26 +73,27 @@ data.pr.processed[, `technical replicate` := NULL]
 setnames(data.pr.processed, old = "biological replicate", new = "replicate")
 
 #############################################
-# Second, generate a single category "protein"
+# Second, generate a single category "substrate_mean"
 #############################################
 
-data.abs.processed.substrate <- data.abs.processed[condition == "substrate"]
-data.abs.processed.substrate.mean <- data.abs.processed.substrate[, lapply(.SD, mean, na.rm = TRUE),  .SDcols = time.cols]
-data.abs.processed <- rbind(data.abs.processed, data.abs.processed.substrate.mean, fill = T)
-data.abs.processed[is.na(condition)]$condition <- "substrate_mean"
+# data.abs.processed.substrate <- data.abs.processed[condition == "substrate"]
+# data.abs.processed.substrate.mean <- data.abs.processed.substrate[, lapply(.SD, mean, na.rm = TRUE),  .SDcols = time.cols]
+# data.abs.processed <- rbind(data.abs.processed, data.abs.processed.substrate.mean, fill = T)
+# data.abs.processed[is.na(condition)]$condition <- "substrate_mean"
 
 #############################
 # Third, subtract background
 #############################
 
-bg <- unlist(data.abs.processed[condition == "substrate_mean", ..time.cols], use.names = TRUE)
-data.abs.processed.ssp <- data.abs.processed[condition %chin% ssp.conditions]
-data.abs.processed.nonssp <- data.abs.processed[!condition %chin% ssp.conditions]
-data.abs.processed.ssp[, (time.cols) := Map(`-`, .SD, bg), .SDcols = time.cols]
-data.abs.processed.ssp[, condition := sprintf("%s-nbg", condition)]
-
-data.abs.processed.final <- rbind(data.abs.processed.ssp, data.abs.processed.nonssp)
-data.abs.processed.final <- data.abs.processed.final[!condition %chin% c("substrate_mean")]
+# bg <- unlist(data.abs.processed[condition == "substrate_mean", ..time.cols], use.names = TRUE)
+# data.abs.processed.ssp <- data.abs.processed[condition %chin% ssp.conditions]
+# data.abs.processed.nonssp <- data.abs.processed[!condition %chin% ssp.conditions]
+# data.abs.processed.ssp[, (time.cols) := Map(`-`, .SD, bg), .SDcols = time.cols]
+# data.abs.processed.ssp[, condition := sprintf("%s-nbg", condition)]
+# 
+# data.abs.processed.final <- rbind(data.abs.processed.ssp, data.abs.processed.nonssp)
+# data.abs.processed.final <- data.abs.processed.final[!condition %chin% c("substrate_mean")]
+data.abs.processed.final <- data.abs.processed
 
 #############################
 # Fourth, prepare for plotting
@@ -127,9 +128,9 @@ summary.table <- longA[
 condition_order <- c(
   "substrate",
   "protein",
-  "substrate+KL111-nbg",
-  "substrate+KL2-nbg",
-  "substrate+KL55-nbg"
+  "substrate+KL111",
+  "substrate+KL2",
+  "substrate+KL55"
 )
 
 summary.table$condition <- factor(
@@ -140,23 +141,23 @@ summary.table$condition <- factor(
 condition_labels <- c(
   "protein"             = "Protein only",
   "substrate"           = "Substrate only",
-  "substrate+KL2-nbg"   = "Substrate + 164_08-KL2*",
-  "substrate+KL55-nbg"  = "Substrate + 174_38-KL55*",
-  "substrate+KL111-nbg" = "Substrate + 184_43-KL111*"
+  "substrate+KL2"   = "Substrate + 164_08-KL2",
+  "substrate+KL55"  = "Substrate + 174_38-KL55",
+  "substrate+KL111" = "Substrate + 184_43-KL111"
 )
 
 condition_colors <- c(
   "protein"             = rgb(44,46,113, maxColorValue = 255),
   "substrate"           = rgb(191,104,163, maxColorValue = 255),
-  "substrate+KL2-nbg"   = rgb(170,101,48, maxColorValue = 255),
-  "substrate+KL55-nbg"  = rgb(177,159,77, maxColorValue = 255),
-  "substrate+KL111-nbg" = rgb(73,127,70, maxColorValue = 255)
+  "substrate+KL2"   = rgb(170,101,48, maxColorValue = 255),
+  "substrate+KL55"  = rgb(177,159,77, maxColorValue = 255),
+  "substrate+KL111" = rgb(73,127,70, maxColorValue = 255)
 )
 
 
 
 brewer.palette <- "Set3"
-panelA <- ggplot(summary.table, aes(x = time, y = value_mean, color = condition, fill = condition)) +
+panelB <- ggplot(summary.table, aes(x = time, y = value_mean, color = condition, fill = condition)) +
   geom_ribbon(aes(ymin = value_mean - value_sd, ymax = value_mean + value_sd), alpha = 0.4, color = "grey", linewidth = .1) +
   geom_line(size = 1) +
   labs(x = "Time (min)",
@@ -167,9 +168,9 @@ panelA <- ggplot(summary.table, aes(x = time, y = value_mean, color = condition,
                      labels = condition_labels) +
   scale_fill_manual(values = condition_colors,
                     labels = condition_labels) +
-  scale_y_continuous(limits = c(-0.01, max(summary.table$value_mean)*1.1)) +
+  scale_y_continuous(limits = c(-0.01, max(summary.table$value_mean)*1.05)) +
   theme_classic(base_size = 13)
-panelA
+panelB
 
 ### Plot panel B
 
@@ -213,7 +214,7 @@ condition_labels <- c(
 
 names(condition_colors) <- gsub("-nbg", "", names(condition_colors))
 
-panelB <- ggplot(summary.table.pr, aes(x = condition, y = value_mean, color = condition)) +
+panelC <- ggplot(summary.table.pr, aes(x = condition, y = value_mean, color = condition)) +
   geom_point(size = 3, alpha = 0.99) +
   geom_errorbar(aes(ymin = value_mean - value_sd,
                     ymax = value_mean + value_sd),
@@ -231,9 +232,9 @@ panelB <- ggplot(summary.table.pr, aes(x = condition, y = value_mean, color = co
 
 # Save files
 
-panelA.outfile <- "Fig7A.pdf"
 panelB.outfile <- "Fig7B.pdf"
-ggsave(panelA.outfile, panelA, width = 6.5, height = 3.6)
-ggsave(panelB.outfile, panelB, width = 4.5, height = 4.5)
+panelC.outfile <- "Fig7C.pdf"
+ggsave(panelB.outfile, panelB, width = 6.5, height = 3.6)
+ggsave(panelC.outfile, panelC, width = 4.5, height = 4.5)
 
 
