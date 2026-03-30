@@ -2,6 +2,7 @@ paths:
   mgg:
     db_input_rel: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/FIGSHARE/OUTPUT_DATA/GWAS/4_ANALYZE/2_AGGREGATED_DATA'
     ecod_domains_input: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/FIGSHARE/OTHER/ecod.develop263.F70.domains.txt'
+    bacteria_metadata: 'MGG Dropbox/Projects/kleb-prophage-div/2025-02-12_KLEBDATA_LIGHT/FIGSHARE/INPUT_DATA/BACTERIA_METADATA/bacteria_metadata.tsv'
   rafal:
     main: "/Users/rmostowy"
     db_output_rel: 'Data/gwas-figs'

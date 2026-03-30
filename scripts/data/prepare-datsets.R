@@ -48,8 +48,12 @@ fwrite(gwas.clusters.functions, file = gwas.clusters.functions.outfile)
 fwrite(gwas.hits.all, file = gwas.hits.all.outfile)
 fwrite(protein.table, file = protein.table.outfile)
 
-
-
+# write S1 Data
+bacteria.metadata.suppl.path <- file.path(cfg$paths$rafal$main, cfg$paths$mgg$bacteria_metadata)
+s1.data <- fread(bacteria.metadata.suppl.path)
+s1.data[, GWAS := s1.data$genomeID %in% bacteria.metadata$genomeID]
+s1.data.outfile <- file.path(data.output.path, 'S1_Data.csv')
+fwrite(s1.data, file = s1.data.outfile)
 
 
 
